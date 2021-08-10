@@ -1,0 +1,8 @@
+# Standard scientific stack:
+numpy
+matplotlib
+scipy
+
+# Custom tools:
+wbml
+backends
