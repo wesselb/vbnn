@@ -1,5 +1,6 @@
 from functools import reduce
 from operator import mul
+import argparse
 
 import lab as B
 import matplotlib.pyplot as plt
@@ -9,12 +10,16 @@ from scipy.stats import linregress
 from wbml.experiment import WorkingDirectory
 from wbml.plot import tweak
 
-wd = WorkingDirectory("_experiments", "1hl")
+parser = argparse.ArgumentParser()
+parser.add_argument("--activation", choices=["relu", "tanh"], default="tanh")
+args = parser.parse_args()
+
+wd = WorkingDirectory("_experiments", "1hl", args.activation)
 
 
 def forward_1hl(w2, w1, b1, x):
     width = B.shape(w2, -1)
-    phi = B.tanh
+    phi = getattr(B, args.activation)
     return B.matmul(w2, phi(B.matmul(w1, x) + b1)) / B.sqrt(width)
 
 
