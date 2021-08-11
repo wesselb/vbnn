@@ -1,3 +1,4 @@
+import argparse
 from functools import reduce
 from operator import mul
 
@@ -9,12 +10,21 @@ from scipy.stats import linregress
 from wbml.experiment import WorkingDirectory
 from wbml.plot import tweak
 
-wd = WorkingDirectory("_experiments", "2hl")
+# Parse arguments.
+parser = argparse.ArgumentParser()
+parser.add_argument("--activation", choices=["relu", "tanh"], default="tanh")
+args = parser.parse_args()
+
+# Extract arguments:
+activation = args.activation
+
+# Setup working directory.
+wd = WorkingDirectory("_experiments", "2hl", activation)
 
 
 def forward_2hl(w3, w2, b2, w1, b1, x):
     width = B.shape(w2, -1)
-    phi = B.tanh
+    phi = getattr(B, activation)
     z = phi(B.matmul(w1, x) + b1)
     z = phi(B.matmul(w2, z) / B.sqrt(width) + b2)
     return B.matmul(w3, z) / B.sqrt(width)
